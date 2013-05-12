@@ -40,7 +40,7 @@ public abstract class Element {
 
 	public void setParent(Element parent) {
 		this.parent = parent;
-		setLevel((parent == null ? 0 : parent.getLevel()));
+		setLevel((parent == null ? 0 : parent.getLevel() + 1));
 	}
 
 	public Element getParent() {

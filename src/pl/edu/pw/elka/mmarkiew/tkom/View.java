@@ -11,6 +11,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 
@@ -104,6 +105,13 @@ public class View extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				if (!(new File(firstFile.getText()).exists())
+						|| !(new File(secondFile.getText()).exists())) {
+					JOptionPane.showMessageDialog(View.this,
+							"One of given files doesn't exist!");
+					return;
+				}
+
 				try {
 					Lexer lex;
 					Parser pars;
@@ -145,9 +153,9 @@ public class View extends JFrame {
 		 * START File labels
 		 */
 		firstFile = new JLabel(
-				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/1.html");
+				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/1.html");
 		secondFile = new JLabel(
-				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/2.html");
+				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/2.html");
 
 		new FileDrop(firstFile, new FileDrop.Listener() {
 			public void filesDropped(File[] files) {
