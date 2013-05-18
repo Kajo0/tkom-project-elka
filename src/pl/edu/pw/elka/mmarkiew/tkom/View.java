@@ -6,7 +6,9 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
+import pl.edu.pw.elka.mmarkiew.tkom.tokens.Token;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {
@@ -53,46 +56,51 @@ public class View extends JFrame {
 
 		initElements();
 
-		// //
-		// //
-		// //
-		// //
-		// //
-		// //
-		// try {
-		// Lexer lex;
-		// Parser pars;
-		// TreeElement first, second;
-		// Linker link;
-		//
-		// lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
-		// lex.extractTokens();
-		// pars = new Parser(lex.getTokens());
-		// pars.parseTokens();
-		// first = pars.getTree();
-		//
-		// lex = new Lexer(Utilities.readFileToString(secondFile.getText()));
-		// lex.extractTokens();
-		// pars = new Parser(lex.getTokens());
-		// pars.parseTokens();
-		// second = pars.getTree();
-		//
-		// link = new Linker(first, second);
-		// try {
-		// link.generateResult();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		//
-		// System.out.println("---------------");
-		// System.out.println(link.getResult());
-		//
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		//
-		// //
-		// dispose();
+		try {
+			Lexer lex;
+			Parser pars;
+			TreeElement first, second;
+			Linker link;
+
+			lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
+			lex.extractTokens();
+			// for (Token t : lex.getTokens())
+			// System.out.println(t.getClass());
+			// System.out.println(lex.getTokens());
+			pars = new Parser(lex.getTokens());
+			pars.parseTokens();
+			first = pars.getTree();
+
+			try {
+				// Create file
+				FileWriter fstream = new FileWriter("C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
+				BufferedWriter out = new BufferedWriter(fstream);
+				out.write(first.toString());
+				// Close the output stream
+				out.close();
+			} catch (Exception e) {// Catch exception if any
+				System.err.println("Error: " + e.getMessage());
+			}
+
+			// lex = new
+			// Lexer(Utilities.readFileToString(secondFile.getText()));
+			// lex.extractTokens();
+			// pars = new Parser(lex.getTokens());
+			// pars.parseTokens();
+			// second = pars.getTree();
+			//
+			// link = new Linker(first, second);
+			// link.generateResult();
+			//
+			// System.out
+			// .println("--------------------------------------------------------------------------------");
+			// System.out.println(link.getResult());
+			// System.out
+			// .println("--------------------------------------------------------------------------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dispose();
 	}
 
 	private void initElements() {
