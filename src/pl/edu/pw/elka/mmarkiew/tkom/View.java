@@ -64,9 +64,9 @@ public class View extends JFrame {
 
 			lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
 			lex.extractTokens();
-			// for (Token t : lex.getTokens())
-			// System.out.println(t.getClass());
-			// System.out.println(lex.getTokens());
+//			 for (Token t : lex.getTokens())
+//			 System.out.println(t.getClass());
+//			 System.out.println(lex.getTokens());
 			pars = new Parser(lex.getTokens());
 			pars.parseTokens();
 			first = pars.getTree();
