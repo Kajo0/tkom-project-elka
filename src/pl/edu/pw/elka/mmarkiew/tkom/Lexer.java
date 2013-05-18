@@ -17,6 +17,12 @@ import pl.edu.pw.elka.mmarkiew.tkom.tokens.StartOpenTagToken;
 import pl.edu.pw.elka.mmarkiew.tkom.tokens.TextToken;
 import pl.edu.pw.elka.mmarkiew.tkom.tokens.Token;
 
+/**
+ * Class responsible for tokenize given text
+ * 
+ * @author Mikolaj Markiewicz
+ * 
+ */
 public class Lexer {
 
 	/**
@@ -120,28 +126,6 @@ public class Lexer {
 		while (Character.isWhitespace(getChar()))
 			popChar();
 	}
-
-	// private boolean isWhitespace(char c) {
-	// return whitespaceCharacters.contains(c);
-	// }
-
-	// private boolean isAlphanum(char c) {
-	// return alphanumCharacters.contains(c);
-	// }
-
-	// /**
-	// * Go through text to bound which is defined as whitespace char
-	// *
-	// * @return Gathered word
-	// */
-	// private String gatherBound() {
-	// StringBuilder str = new StringBuilder();
-	//
-	// while (!isWhitespace(getChar()))
-	// str.append(popChar());
-	//
-	// return str.toString();
-	// }
 
 	/**
 	 * Gather word from actual position to any character on given list
