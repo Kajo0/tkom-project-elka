@@ -1,5 +1,12 @@
 package pl.edu.pw.elka.mmarkiew.tkom.elements;
 
+/**
+ * Enumeration defines allowed tags and their quantity - whether has to end them
+ * in separated tag
+ * 
+ * @author Mikolaj Markiewicz
+ * 
+ */
 public enum TagQuantity {
 
 	a(false), abbr(false), acronym(false), address(false), applet(false), article(
@@ -26,12 +33,26 @@ public enum TagQuantity {
 			true), hr(true), img(true), input(true), keygen(true), link(true), meta(
 			true), param(true), source(true), track(true), wbr(true);
 
+	/**
+	 * Whether is single tag or not
+	 */
 	private boolean single;
 
+	/**
+	 * C-tor
+	 * 
+	 * @param single
+	 *            Single tag or not
+	 */
 	TagQuantity(boolean single) {
 		this.single = single;
 	}
 
+	/**
+	 * Whether is single tag or not
+	 * 
+	 * @return True if single, false otherwise
+	 */
 	public boolean isSingle() {
 		return single;
 	}

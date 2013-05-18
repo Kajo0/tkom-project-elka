@@ -208,8 +208,12 @@ public class Lexer {
 		// If not found < - last tag already read, exception is thrown
 		word = gatherBound(new char[] { '<' }).trim();
 
-		if (!word.isEmpty())
+		if (!word.isEmpty()) {
+			if (tokens.getLast() instanceof DoctypeToken)
+				throw new RuntimeException("Expected Tag Element.");
+
 			tokens.add(new TextToken(word));
+		}
 
 		// We are on < character
 		popChar();
@@ -220,6 +224,9 @@ public class Lexer {
 			expectCloseTag();
 		} else if (getChar() == '!') {
 			// Comment tag <!--
+			if (tokens.getLast() instanceof DoctypeToken)
+				throw new RuntimeException("Expected Tag Element.");
+
 			popChar();
 			expectComment();
 		} else {
@@ -303,7 +310,10 @@ public class Lexer {
 		String word = gatherBound(new char[] { '<' });
 		popChar();
 
-		while (getChar() != '/') {
+		while (getChar() != '/' || text.charAt(pos + 1) != 's'
+				|| text.charAt(pos + 2) != 'c' || text.charAt(pos + 3) != 'r'
+				|| text.charAt(pos + 4) != 'i' || text.charAt(pos + 5) != 'p'
+				|| text.charAt(pos + 6) != 't') {
 			word += '<' + gatherBound(new char[] { '<' });
 			popChar();
 		}
@@ -367,8 +377,9 @@ public class Lexer {
 	 *             If no value found
 	 */
 	private void attributeSingleWordExpected() {
-		String word = gatherBoundWhite(new char[] { '>', '/' });
+		String word = gatherBoundWhite(new char[] { '>' });// , '/' });
 
+		System.out.println(text.substring(pos - 20, pos + 20));
 		if (word.length() == 0)
 			throw new RuntimeException("Expected attribute value");
 
@@ -466,7 +477,12 @@ public class Lexer {
 	 */
 	private void popFromStack(String tag) {
 		if (!stack.pop().equals(tag))
-			throw new RuntimeException("Bad stack order");
+			throw new RuntimeException("Bad stack order on position: "
+					+ pos
+					+ "(+-10)"
+					+ text.substring((pos - 10 < 0 ? 0 : pos - 10),
+							(pos + 10 > text.length() ? text.length()
+									: pos + 10)));
 	}
 
 }

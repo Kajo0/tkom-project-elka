@@ -2,51 +2,63 @@ package pl.edu.pw.elka.mmarkiew.tkom.elements;
 
 import java.util.LinkedList;
 
+/**
+ * Class represents simple html DOM tree
+ * 
+ * @author Mikolaj Markiewicz
+ * 
+ */
 public class TreeElement {
 
-	private String doctype;
-	private LinkedList<Element> elements; // Always one should be there
 	/**
-	 * @deprecated
+	 * Tree document doctype
 	 */
-	private Element actualElement = null;
+	private String doctype;
 
+	/**
+	 * List of children, there has to be one root element
+	 */
+	private LinkedList<Element> elements; // Always one should be there
+
+	/**
+	 * C-tor
+	 */
 	public TreeElement() {
 		elements = new LinkedList<>();
 	}
 
+	/**
+	 * Set tree doctype
+	 * 
+	 * @param doctype
+	 *            New doctype
+	 */
 	public void setDoctype(String doctype) {
 		this.doctype = doctype;
 	}
 
+	/**
+	 * Add element on the top of tree
+	 * 
+	 * @param elem
+	 *            Element to add
+	 */
 	public void addElement(Element elem) {
 		elements.add(elem);
 	}
-	
+
+	/**
+	 * Get elements of the top element tree
+	 * 
+	 * @return Top tree elements
+	 */
 	public LinkedList<Element> getElements() {
 		return elements;
 	}
 
 	/**
-	 * @deprecated
+	 * Get string representation
 	 */
-	public Element nextElement() {
-		if (actualElement == null) {
-			actualElement = elements.getFirst();
-			return actualElement;
-		}
-
-		actualElement = ((TagElement) elements.getFirst()).nextElement();
-		return actualElement;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public Element getActualElement() {
-		return actualElement;
-	}
-
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 
@@ -60,8 +72,38 @@ public class TreeElement {
 		return str.toString();
 	}
 
+	/**
+	 * Get document doctype
+	 * 
+	 * @return Document doctype
+	 */
 	public String getDoctype() {
 		return doctype;
 	}
+
+	// /**
+	// * @deprecated
+	// */
+	// private Element actualElement = null;
+	//
+	// /**
+	// * @deprecated
+	// */
+	// public Element nextElement() {
+	// if (actualElement == null) {
+	// actualElement = elements.getFirst();
+	// return actualElement;
+	// }
+	//
+	// actualElement = ((TagElement) elements.getFirst()).nextElement();
+	// return actualElement;
+	// }
+	//
+	// /**
+	// * @deprecated
+	// */
+	// public Element getActualElement() {
+	// return actualElement;
+	// }
 
 }

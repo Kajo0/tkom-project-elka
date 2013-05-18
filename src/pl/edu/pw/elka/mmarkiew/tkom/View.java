@@ -70,6 +70,7 @@ public class View extends JFrame {
 			pars = new Parser(lex.getTokens());
 			pars.parseTokens();
 			first = pars.getTree();
+			System.out.println(first);
 
 			try {
 				// Create file

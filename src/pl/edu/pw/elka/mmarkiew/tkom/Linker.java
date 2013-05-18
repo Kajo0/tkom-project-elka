@@ -13,47 +13,114 @@ import pl.edu.pw.elka.mmarkiew.tkom.elements.TagElement;
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TextElement;
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 
+/**
+ * Class represents main program logic, it's sth like code generator
+ * 
+ * @author Mikolaj Markiewicz
+ * 
+ */
 public class Linker {
 
+	/**
+	 * First tree used in merge
+	 */
 	private TreeElement first;
+
+	/**
+	 * Second tree used in merge
+	 */
 	private TreeElement second;
+
+	/**
+	 * Result merge tree
+	 */
 	private TreeElement result;
+
+	/**
+	 * Actual element - used as reference to add elements to it and move around
+	 * result tree
+	 */
 	private TagElement actualResult;
 
+	/**
+	 * C-tor
+	 * 
+	 * @param first
+	 *            First tree to merge it
+	 * 
+	 * @param second
+	 *            Second tree to merge with
+	 */
 	public Linker(TreeElement first, TreeElement second) {
 		this.first = first;
 		this.second = second;
 		this.result = new TreeElement();
 	}
 
-	public void generateResult() {
+	/**
+	 * Start merging trees
+	 * 
+	 * @return Merged tree
+	 */
+	public TreeElement generateResult() {
+		// Choose doctype
 		conflictDoctype1();
 
+		// Go through root elements of each tree
 		goThroughElement(first.getElements().iterator(), second.getElements()
 				.iterator());
+
+		return result;
 	}
 
+	/**
+	 * Go through elements of each element
+	 * 
+	 * @param fir
+	 *            First element children iterator
+	 * @param sec
+	 *            Second element children iterator
+	 */
 	private void goThroughElement(Iterator<Element> fir, Iterator<Element> sec) {
 		while (fir.hasNext() || sec.hasNext()) {
+			// While there is any element
+
 			if (!fir.hasNext()) {
+				// If there are elements only in second tree, add them to result
 				conflictInnerAmount11(sec.next());
 			} else if (!sec.hasNext()) {
+				// If there are elements only in first tree, add them to result
 				conflictInnerAmount11(fir.next());
 			} else {
+				// If there are elements in both trees, compare them
 				compareThem(fir.next(), sec.next());
 			}
 		}
 	}
 
-	// Doctype via 1.
+	/**
+	 * Resolve conflict via no. 1 in conflict table
+	 */
 	private void conflictDoctype1() {
+		// Doctype via 1.
 		result.setDoctype(second.getDoctype());
 	}
 
-	// Merge attributes via 2.-5.
+	/**
+	 * Resolve conflict via no. 2 to 5 in conflict table
+	 * 
+	 * @param fe
+	 *            First element
+	 * 
+	 * @param se
+	 *            Second element
+	 * 
+	 * @param resElement
+	 *            Result element to put result inside
+	 */
 	private void conflictAttributes2_5(TagElement fe, TagElement se,
 			TagElement resElement) {
-
+		// Merge attributes via 2.-5.
 		Map<String, String> res = new TreeMap<String, String>(
 				fe.getAttributes());
 
@@ -63,8 +130,17 @@ public class Linker {
 		resElement.setAttributes(res);
 	}
 
-	// Inner via 6.
+	/**
+	 * Resolve conflict via no. 6 in conflict table
+	 * 
+	 * @param fe
+	 *            First element
+	 * 
+	 * @param se
+	 *            Second element
+	 */
 	private void conflictGoThroughInner6(TagElement fe, TagElement se) {
+		// Inner via 6.
 		TagElement resElement = new TagElement(fe.getTag(), actualResult);
 
 		conflictAttributes2_5(fe, se, resElement);
@@ -77,8 +153,17 @@ public class Linker {
 		parentActualResult();
 	}
 
-	// Conflict via 7.
+	/**
+	 * Resolve conflict via no. 7 in conflict table
+	 * 
+	 * @param fe
+	 *            First element
+	 * 
+	 * @param se
+	 *            Second element
+	 */
 	private void conflictText7(TextElement fe, TextElement se) {
+		// Conflict via 7.
 		TextElement resElement = new TextElement(fe.getContent(), actualResult);
 
 		String f = fe.toString().replace('\n', ' ');
@@ -127,7 +212,16 @@ public class Linker {
 		addElementToResult(resElement);
 	}
 
-	// Helper to compare tag with non tag element
+	/**
+	 * Helper to compare tag within non tag element<br />
+	 * Used to add first and another in proper order
+	 * 
+	 * @param tag
+	 *            First element
+	 * 
+	 * @param text
+	 *            Second element
+	 */
 	private void conflictTagTextHelper(TagElement tag, TextElement text) {
 		if (tag.hasOnlyText()) {
 			// First has only text element inside
@@ -145,24 +239,54 @@ public class Linker {
 		}
 	}
 
-	// Via 9.
+	/**
+	 * Resolve conflict via no. 9 in conflict table
+	 * 
+	 * @param tag
+	 *            Element to add
+	 */
 	private void conflictText9(TagElement tag) {
+		// Via 9.
 		addElementToResult(tag.clone());
 	}
 
-	// Via 10.
+	/**
+	 * Resolve conflict via no. 10 in conflict table
+	 * 
+	 * @param tag
+	 *            Element to add
+	 * 
+	 * @param text
+	 *            Element to element
+	 */
 	private void conflictText10(TagElement tag, TextElement text) {
+		// Via 10.
 		addElementToResult(text.clone());
 		addElementToResult(tag.clone());
 	}
 
-	// Just add via 11.
+	/**
+	 * Resolve conflict via no. 11 in conflict table
+	 * 
+	 * @param e
+	 *            Element to add
+	 */
 	private void conflictInnerAmount11(Element e) {
+		// Just add via 11.
 		addElementToResult(e.clone());
 	}
 
-	// Conflict, via 12.
+	/**
+	 * Resolve conflict via no. 12 in conflict table
+	 * 
+	 * @param fe
+	 *            First element
+	 * 
+	 * @param se
+	 *            Second element
+	 */
 	private void conflictTagNames12(TagElement fe, TagElement se) {
+		// Conflict, via 12.
 		String[] a = new String[] { "<1>", "<2>", "<1> <2>",
 				"<1> InnerOf2 ... </1>" };
 
@@ -222,6 +346,15 @@ public class Linker {
 		}
 	}
 
+	/**
+	 * Compare two elements
+	 * 
+	 * @param fe
+	 *            First element
+	 * 
+	 * @param se
+	 *            Second element
+	 */
 	private void compareThem(Element fe, Element se) {
 		if (fe.getTag().equals(se.getTag())) {
 			// Both has same tag
@@ -252,6 +385,13 @@ public class Linker {
 		}
 	}
 
+	/**
+	 * Add given element to actual result element<br />
+	 * Bind his parent also
+	 * 
+	 * @param tag
+	 *            Element to add
+	 */
 	private void addElementToResult(Element tag) {
 		tag.setParent(actualResult);
 
@@ -263,15 +403,30 @@ public class Linker {
 		}
 	}
 
+	/**
+	 * Change actual result to given one
+	 * 
+	 * @param tag
+	 *            New actual result element
+	 */
 	private void newActualResult(TagElement tag) {
 		addElementToResult(tag);
 		actualResult = tag;
 	}
 
+	/**
+	 * Go on the top level of actual result<br />
+	 * Change actual result to it's parent to do that
+	 */
 	private void parentActualResult() {
 		actualResult = (TagElement) actualResult.getParent();
 	}
 
+	/**
+	 * Get generated result
+	 * 
+	 * @return Generated result
+	 */
 	public TreeElement getResult() {
 		return result;
 	}
