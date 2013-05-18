@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
+import pl.edu.pw.elka.mmarkiew.tkom.elements.CommentElement;
 import pl.edu.pw.elka.mmarkiew.tkom.elements.Element;
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TagElement;
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TextElement;
@@ -78,17 +79,47 @@ public class Linker {
 
 	// Conflict via 7.
 	private void conflictText7(TextElement fe, TextElement se) {
-		TextElement resElement = fe.clone();
+		TextElement resElement = new TextElement(fe.getContent(), actualResult);
 
-		String f = fe.toString();
-		String s = se.toString();
+		String f = fe.toString().replace('\n', ' ');
+		String s = se.toString().replace('\n', ' ');
 
-		if (!f.equals(s)) {// TODO
-			String[] a = new String[] { f, s, f + s, s + f };
-			int c = JOptionPane.showOptionDialog(null, "ktore?", "text", 0, 0,
-					null, a, null);
+		if (!f.equals(s)) {
+			String[] a = new String[] { "1", "2", "1 + 2", "2 + 1" };
 
-			resElement.setContent(a[c]);
+			String message = "<html><body>";
+
+			if (fe instanceof CommentElement) {
+				message += "<strong>First one is comment so it's hidden</strong>. ";
+				message += "It's this:<br />&lt;!--"
+						+ f.replaceAll("^(<!--)|(-->)$", "") + "--&gt;";
+			} else if (se instanceof CommentElement) {
+				message += "<strong>First one is comment so it's hidden</strong>";
+				message += "It's this:<br />&lt;!--"
+						+ s.replaceAll("^(<!--)|(-->)$", "") + "--&gt;";
+			}
+
+			message += "<ul>" + "<li>" + f + "</li>" + "<li>" + s + "</li>"
+					+ "<li>" + f + s + "</li>" + "<li>" + s + f + "</li>"
+					+ "</ul>" + "</body></html>";
+
+			int c = JOptionPane.showOptionDialog(null, message,
+					"Conflict no.7 - Text comparison", 0, 0, null, a, null);
+
+			switch (c) {
+			case 1:
+				resElement.setContent(s);
+				break;
+			case 2:
+				resElement.setContent(f + s);
+				break;
+			case 3:
+				resElement.setContent(s + f);
+				break;
+			case 0:
+			default:
+				resElement.setContent(f);
+			}
 		} else {
 			// Same texts
 		}
@@ -132,17 +163,33 @@ public class Linker {
 
 	// Conflict, via 12.
 	private void conflictTagNames12(TagElement fe, TagElement se) {
-		String[] a = new String[] { "<tag/><tag1/>", "<tag1>", "<tag2>",
-				"Wnetrze" };
-		int c = JOptionPane.showOptionDialog(null, "ktore?", "text", 0, 0,
-				null, a, null);
+		String[] a = new String[] { "<1>", "<2>", "<1> <2>",
+				"<1> InnerOf2 ... </1>" };
 
-		TagElement resElement;
+		String f = fe.toString().replace('\n', ' ');
+		String s = se.toString().replace('\n', ' ');
+
+		String message = "<html><body>"
+				+ "<ul>"
+				+ "<li>"
+				+ f
+				+ "</li>"
+				+ "<li>"
+				+ s
+				+ "</li>"
+				+ "<li>"
+				+ f
+				+ s
+				+ "</li>"
+				+ "<li>"
+				+ "&lt;2&gt; <br /> Comparison between &lt;1&gt; and &lt;2.1&gt; <br /> &lt;/2&gt;"
+				+ "</li>" + "</ul>" + "</body></html>";
+
+		int c = JOptionPane.showOptionDialog(null, message,
+				"Conflict no.12 - Different tags comparison.", 0, 0, null, a,
+				null);
+
 		switch (c) {
-		case 0:
-			addElementToResult(fe.clone());
-			addElementToResult(se.clone());
-			break;
 		case 1:
 			addElementToResult(fe.clone());
 			break;
@@ -150,7 +197,7 @@ public class Linker {
 			addElementToResult(se.clone());
 			break;
 		case 3:
-			resElement = se.clone();
+			TagElement resElement = se.clone();
 			resElement.clearElements();
 
 			newActualResult(resElement);
@@ -167,8 +214,11 @@ public class Linker {
 			}
 
 			parentActualResult();
-
 			break;
+		case 0:
+		default:
+			addElementToResult(fe.clone());
+			addElementToResult(se.clone());
 		}
 	}
 
@@ -191,6 +241,10 @@ public class Linker {
 				// Different tags
 				// First is TagElement, second isn't
 				conflictTagTextHelper((TagElement) fe, (TextElement) se);
+			} else if (!(fe instanceof TagElement)
+					&& !(se instanceof TagElement)) {
+				// One of them is TextElement, another is CommentElement
+				conflictText7((TextElement) fe, (TextElement) se);
 			} else {
 				// Both are TagElement
 				conflictTagNames12((TagElement) fe, (TagElement) se);
