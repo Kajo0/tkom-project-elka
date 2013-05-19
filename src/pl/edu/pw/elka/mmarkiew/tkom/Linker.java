@@ -371,7 +371,8 @@ public class Linker {
 		 * Script, avoid JDialog exceptions
 		 */
 		message = Pattern
-				.compile("(<script.*?</script\\s*>)|(<style.*?</style\\s*>)",
+				.compile(
+						"(<script.*?</script\\s*>)|(<style.*?</style\\s*>)|(<meta.*?/>)|(<title.*?</title>)",
 						Pattern.DOTALL).matcher(message).replaceAll("");
 
 		int c = JOptionPane.showOptionDialog(null, message,
