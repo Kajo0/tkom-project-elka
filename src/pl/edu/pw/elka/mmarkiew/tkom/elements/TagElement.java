@@ -206,11 +206,9 @@ public class TagElement extends Element {
 		if (getTag().equals("script"))
 			return true;
 
-		for (Element e : elements) {
-			System.out.println(e.getTag());
+		for (Element e : elements)
 			if (e.getTag().equals("script"))
 				return true;
-		}
 
 		return false;
 	}
