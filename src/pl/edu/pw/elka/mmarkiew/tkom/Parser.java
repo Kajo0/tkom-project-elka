@@ -166,7 +166,7 @@ public class Parser {
 			return;
 		} else if (t instanceof CloseTagToken) {
 			// Token >
-			if (TagQuantity.valueOf(actualElement.getTag()).isSingle()) {
+			if (TagQuantity.valueOf(actualElement.getTag().toLowerCase()).isSingle()) {
 				actualElement.setEmpty(true);
 				actualElement = (TagElement) actualElement.getParent();
 			}

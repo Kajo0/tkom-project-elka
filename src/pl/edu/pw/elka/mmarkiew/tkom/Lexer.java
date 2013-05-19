@@ -26,6 +26,16 @@ import pl.edu.pw.elka.mmarkiew.tkom.tokens.Token;
 public class Lexer {
 
 	/**
+	 * Number of actual line
+	 */
+	private int lineNumber;
+
+	/**
+	 * Position of actual character in line
+	 */
+	private int linePosition;
+
+	/**
 	 * Whitespace characters
 	 */
 	public static final LinkedList<Character> whitespaceCharacters = new LinkedList<>(
@@ -71,6 +81,8 @@ public class Lexer {
 		this.pos = 0;
 		this.tokens = new LinkedList<>();
 		this.stack = new Stack<>();
+		this.lineNumber = 1;
+		this.linePosition = 0;
 	}
 
 	/**
@@ -88,6 +100,9 @@ public class Lexer {
 			} catch (ArrayIndexOutOfBoundsException e) {
 				// EOF
 				break;
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException("No html tag defined. "
+						+ positionDebugString());
 			}
 		}
 
@@ -105,6 +120,13 @@ public class Lexer {
 	private char popChar() {
 		if (pos + 1 >= text.length())
 			throw new ArrayIndexOutOfBoundsException("Char after EOS");
+
+		if (text.charAt(pos) == '\n') {
+			++lineNumber;
+			linePosition = 0;
+		} else {
+			++linePosition;
+		}
 
 		return text.charAt(pos++);
 	}
@@ -506,12 +528,16 @@ public class Lexer {
 	 * @return String information
 	 */
 	private String positionDebugString() {
-		return " on position: "
+		return " Line: "
+				+ lineNumber
+				+ " Column: "
+				+ linePosition
+				+ ". "
+				+ " On global position: "
 				+ pos
-				+ " (+-10): __"
+				+ " (+-10 wrapped into __ characters): __"
 				+ text.substring((pos - 10 < 0 ? 0 : pos - 10),
 						(pos + 10 > text.length() ? text.length() : pos + 10))
 				+ "__";
 	}
-
 }

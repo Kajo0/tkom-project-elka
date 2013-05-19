@@ -30,6 +30,8 @@ public class Utilities {
 			CharBuffer chBuff = Charset.defaultCharset().decode(byteBuff);
 			// CharBuffer chBuff = Charset.forName("UTF-8").decode(byteBuff);
 
+			fch.close();
+
 			return chBuff.toString();
 		} catch (IOException e) {
 			return "";

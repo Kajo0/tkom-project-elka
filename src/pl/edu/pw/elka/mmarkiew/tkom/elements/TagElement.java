@@ -83,7 +83,7 @@ public class TagElement extends Element {
 	 */
 	public void addElement(Element elem) {
 		if (elem instanceof TagElement)
-			if (TagQuantity.valueOf(elem.getTag()).isSingle())
+			if (TagQuantity.valueOf(elem.getTag().toLowerCase()).isSingle())
 				elem.setEmpty(true);
 
 		elem.level = this.level + 1;
