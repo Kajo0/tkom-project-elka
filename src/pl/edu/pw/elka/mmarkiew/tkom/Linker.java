@@ -22,6 +22,11 @@ import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 public class Linker {
 
 	/**
+	 * Examined conflict counter
+	 */
+	private Map<Integer, Integer> conflictMap;
+
+	/**
 	 * First tree used in merge
 	 */
 	private TreeElement first;
@@ -55,6 +60,15 @@ public class Linker {
 		this.first = first;
 		this.second = second;
 		this.result = new TreeElement();
+
+		this.conflictMap = new TreeMap<>();
+		for (int i = 1; i < 13; ++i)
+			if (i == 8)
+				;// deprecated conflict
+			else if (i == 3 || i == 4 || i == 5)
+				;// merge attributes conflict
+			else
+				this.conflictMap.put(i, 0);
 	}
 
 	/**
@@ -99,11 +113,32 @@ public class Linker {
 	}
 
 	/**
+	 * Increment occurrence of conflict in counter map
+	 * 
+	 * @param i
+	 *            Conflict number
+	 */
+	private void incrementConflictCounter(int i) {
+		conflictMap.put(i, conflictMap.get(i) + 1);
+	}
+
+	/**
+	 * Get conflict counter map
+	 * 
+	 * @return Map with counters
+	 */
+	public Map<Integer, Integer> getConflictCounterMap() {
+		return conflictMap;
+	}
+
+	/**
 	 * Resolve conflict via no. 1 in conflict table
 	 */
 	private void conflictDoctype1() {
 		// Doctype via 1.
 		result.setDoctype(second.getDoctype());
+
+		incrementConflictCounter(1);
 	}
 
 	/**
@@ -128,6 +163,8 @@ public class Linker {
 			res.put(entry.getKey(), entry.getValue());
 
 		resElement.setAttributes(res);
+
+		incrementConflictCounter(2);
 	}
 
 	/**
@@ -151,6 +188,8 @@ public class Linker {
 				.iterator());
 
 		parentActualResult();
+
+		incrementConflictCounter(6);
 	}
 
 	/**
@@ -210,6 +249,8 @@ public class Linker {
 		}
 
 		addElementToResult(resElement);
+
+		incrementConflictCounter(7);
 	}
 
 	/**
@@ -248,6 +289,8 @@ public class Linker {
 	private void conflictText9(TagElement tag) {
 		// Via 9.
 		addElementToResult(tag.clone());
+
+		incrementConflictCounter(9);
 	}
 
 	/**
@@ -263,6 +306,8 @@ public class Linker {
 		// Via 10.
 		addElementToResult(text.clone());
 		addElementToResult(tag.clone());
+
+		incrementConflictCounter(10);
 	}
 
 	/**
@@ -274,6 +319,8 @@ public class Linker {
 	private void conflictInnerAmount11(Element e) {
 		// Just add via 11.
 		addElementToResult(e.clone());
+
+		incrementConflictCounter(11);
 	}
 
 	/**
@@ -344,6 +391,8 @@ public class Linker {
 			addElementToResult(fe.clone());
 			addElementToResult(se.clone());
 		}
+
+		incrementConflictCounter(12);
 	}
 
 	/**

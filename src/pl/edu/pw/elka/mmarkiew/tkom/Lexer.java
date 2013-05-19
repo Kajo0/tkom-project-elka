@@ -181,7 +181,8 @@ public class Lexer {
 			String doc = gatherBoundWhite(new char[] { '>' });
 
 			if (!doc.equalsIgnoreCase("doctype"))
-				throw new RuntimeException("Bad doctype tag");
+				throw new RuntimeException("Bad doctype tag"
+						+ positionDebugString());
 
 			ommitWhitespaces();
 
@@ -190,7 +191,8 @@ public class Lexer {
 
 			tokens.add(new DoctypeToken(type));
 		} else {
-			throw new RuntimeException("No doctype found!");
+			throw new RuntimeException("No doctype found!"
+					+ positionDebugString());
 		}
 	}
 
@@ -210,7 +212,8 @@ public class Lexer {
 
 		if (!word.isEmpty()) {
 			if (tokens.getLast() instanceof DoctypeToken)
-				throw new RuntimeException("Expected Tag Element.");
+				throw new RuntimeException("Expected Tag Element."
+						+ positionDebugString());
 
 			tokens.add(new TextToken(word));
 		}
@@ -225,7 +228,8 @@ public class Lexer {
 		} else if (getChar() == '!') {
 			// Comment tag <!--
 			if (tokens.getLast() instanceof DoctypeToken)
-				throw new RuntimeException("Expected Tag Element.");
+				throw new RuntimeException("Expected Tag Element."
+						+ positionDebugString());
 
 			popChar();
 			expectComment();
@@ -237,7 +241,8 @@ public class Lexer {
 			else if (popChar() == '/' && getChar() == '>')
 				tokens.add(new CloseEmptyTagToken(""));
 			else
-				throw new RuntimeException("Expected close tag.");
+				throw new RuntimeException("Expected close tag."
+						+ positionDebugString());
 
 			popChar();
 
@@ -333,16 +338,22 @@ public class Lexer {
 	 *             If no end quote found
 	 */
 	private void attributeDoubleQuoteExpected() {
-		String word = gatherBound(new char[] { '"' });// , '/', '>' });
+		String word = null;
 
-		while (text.charAt(pos - 1) == '\\') {
-			word += "\"";
-			popChar();
-			word += gatherBound(new char[] { '"' });// , '/', '>' });
+		try {
+			word = gatherBound(new char[] { '"' });// , '/', '>' });
+
+			while (text.charAt(pos - 1) == '\\') {
+				word += "\"";
+				popChar();
+				word += gatherBound(new char[] { '"' });// , '/', '>' });
+			}
+		} catch (IndexOutOfBoundsException e) {
 		}
 
 		if (getChar() != '"')
-			throw new RuntimeException("Expected double quote character.");
+			throw new RuntimeException("Expected double quote character."
+					+ positionDebugString());
 
 		popChar();
 		tokens.add(new AttributeValueToken(word, '\"'));
@@ -355,16 +366,22 @@ public class Lexer {
 	 *             If no end quote found
 	 */
 	private void attributeSingleQuoteExpected() {
-		String word = gatherBound(new char[] { '\'' });// , '/', '>' });
+		String word = null;
 
-		while (text.charAt(pos - 1) == '\\') {
-			word += "\'";
-			popChar();
-			word += gatherBound(new char[] { '\'' });// , '/', '>' });
+		try {
+			word = gatherBound(new char[] { '\'' });// , '/', '>' });
+
+			while (text.charAt(pos - 1) == '\\') {
+				word += "\'";
+				popChar();
+				word += gatherBound(new char[] { '\'' });// , '/', '>' });
+			}
+		} catch (IndexOutOfBoundsException e) {
 		}
 
 		if (getChar() != '\'')
-			throw new RuntimeException("Expected single quote character.");
+			throw new RuntimeException("Expected single quote character."
+					+ positionDebugString());
 
 		popChar();
 		tokens.add(new AttributeValueToken(word, '\''));
@@ -379,9 +396,9 @@ public class Lexer {
 	private void attributeSingleWordExpected() {
 		String word = gatherBoundWhite(new char[] { '>' });// , '/' });
 
-		System.out.println(text.substring(pos - 20, pos + 20));
 		if (word.length() == 0)
-			throw new RuntimeException("Expected attribute value");
+			throw new RuntimeException("Expected attribute value"
+					+ positionDebugString());
 
 		tokens.add(new AttributeValueToken(word, '\"'));
 	}
@@ -410,7 +427,8 @@ public class Lexer {
 		StringBuilder wrd = new StringBuilder();
 
 		if (popChar() != '-' || popChar() != '-')
-			throw new RuntimeException("Expected comment tag.");
+			throw new RuntimeException("Expected comment tag."
+					+ positionDebugString());
 
 		try {
 			while (true) {
@@ -428,7 +446,8 @@ public class Lexer {
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new RuntimeException("Expected comment end tag.");
+			throw new RuntimeException("Expected comment end tag."
+					+ positionDebugString());
 		}
 
 		tokens.add(new CommentToken(wrd.toString()));
@@ -437,8 +456,8 @@ public class Lexer {
 	/**
 	 * Check whether is proper tag
 	 * 
-	 * @throws Enum
-	 *             Exception if no enumertation set
+	 * @throws IllegalArgumentException
+	 *             if no enumertation set
 	 * 
 	 * @param tag
 	 *            Tag to check
@@ -477,12 +496,22 @@ public class Lexer {
 	 */
 	private void popFromStack(String tag) {
 		if (!stack.pop().equals(tag))
-			throw new RuntimeException("Bad stack order on position: "
-					+ pos
-					+ "(+-10)"
-					+ text.substring((pos - 10 < 0 ? 0 : pos - 10),
-							(pos + 10 > text.length() ? text.length()
-									: pos + 10)));
+			throw new RuntimeException("Bad stack order"
+					+ positionDebugString());
+	}
+
+	/**
+	 * Get position offset with +- 10 characters around current position
+	 * 
+	 * @return String information
+	 */
+	private String positionDebugString() {
+		return " on position: "
+				+ pos
+				+ " (+-10): __"
+				+ text.substring((pos - 10 < 0 ? 0 : pos - 10),
+						(pos + 10 > text.length() ? text.length() : pos + 10))
+				+ "__";
 	}
 
 }

@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,52 +58,55 @@ public class View extends JFrame {
 
 		initElements();
 
-		try {
-			Lexer lex;
-			Parser pars;
-			TreeElement first, second;
-			Linker link;
-
-			lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
-			lex.extractTokens();
-//			 for (Token t : lex.getTokens())
-//			 System.out.println(t.getClass());
-//			 System.out.println(lex.getTokens());
-			pars = new Parser(lex.getTokens());
-			pars.parseTokens();
-			first = pars.getTree();
-			System.out.println(first);
-
-			try {
-				// Create file
-				FileWriter fstream = new FileWriter("C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
-				BufferedWriter out = new BufferedWriter(fstream);
-				out.write(first.toString());
-				// Close the output stream
-				out.close();
-			} catch (Exception e) {// Catch exception if any
-				System.err.println("Error: " + e.getMessage());
-			}
-
-			// lex = new
-			// Lexer(Utilities.readFileToString(secondFile.getText()));
-			// lex.extractTokens();
-			// pars = new Parser(lex.getTokens());
-			// pars.parseTokens();
-			// second = pars.getTree();
-			//
-			// link = new Linker(first, second);
-			// link.generateResult();
-			//
-			// System.out
-			// .println("--------------------------------------------------------------------------------");
-			// System.out.println(link.getResult());
-			// System.out
-			// .println("--------------------------------------------------------------------------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		dispose();
+		// try {
+		// Lexer lex;
+		// Parser pars;
+		// TreeElement first, second;
+		// Linker link;
+		//
+		// lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
+		// lex.extractTokens();
+		// // for (Token t : lex.getTokens())
+		// // System.out.println(t.getClass());
+		// // System.out.println(lex.getTokens());
+		// pars = new Parser(lex.getTokens());
+		// pars.parseTokens();
+		// first = pars.getTree();
+		// System.out.println(first);
+		//
+		// try {
+		// // Create file
+		// FileWriter fstream = new
+		// FileWriter("C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
+		// BufferedWriter out = new BufferedWriter(fstream);
+		// out.write(first.toString());
+		// // Close the output stream
+		// out.close();
+		// } catch (Exception e) {// Catch exception if any
+		// System.err.println("Error: " + e.getMessage());
+		// }
+		//
+		// // lex = new
+		// // Lexer(Utilities.readFileToString(secondFile.getText()));
+		// // lex.extractTokens();
+		// // pars = new Parser(lex.getTokens());
+		// // pars.parseTokens();
+		// // second = pars.getTree();
+		// //
+		// // link = new Linker(first, second);
+		// // link.generateResult();
+		// //
+		// // System.out
+		// //
+		// .println("--------------------------------------------------------------------------------");
+		// // System.out.println(link.getResult());
+		// // System.out
+		// //
+		// .println("--------------------------------------------------------------------------------");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// // dispose();
 	}
 
 	private void initElements() {
@@ -129,17 +134,13 @@ public class View extends JFrame {
 
 					lex = new Lexer(Utilities.readFileToString(firstFile
 							.getText()));
-					lex.extractTokens();
-					pars = new Parser(lex.getTokens());
-					pars.parseTokens();
-					first = pars.getTree();
+					pars = new Parser(lex.extractTokens());
+					first = pars.parseTokens();
 
 					lex = new Lexer(Utilities.readFileToString(secondFile
 							.getText()));
-					lex.extractTokens();
-					pars = new Parser(lex.getTokens());
-					pars.parseTokens();
-					second = pars.getTree();
+					pars = new Parser(lex.extractTokens());
+					second = pars.parseTokens();
 
 					link = new Linker(first, second);
 					link.generateResult();
@@ -149,6 +150,12 @@ public class View extends JFrame {
 					System.out.println(link.getResult());
 					System.out
 							.println("--------------------------------------------------------------------------------");
+
+					for (Entry<Integer, Integer> entry : link
+							.getConflictCounterMap().entrySet())
+						System.out.println("Conflict no. " + entry.getKey()
+								+ "\t: " + entry.getValue() + " times");
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
