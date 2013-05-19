@@ -1,12 +1,13 @@
 package pl.edu.pw.elka.mmarkiew.tkom;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
+//import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.FileChannel;
+import java.io.RandomAccessFile;
+//import java.nio.ByteBuffer;
+//import java.nio.CharBuffer;
+//import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
 public class Utilities {
@@ -19,23 +20,43 @@ public class Utilities {
 	 * 
 	 * @return Stringified file
 	 */
-	@SuppressWarnings("resource")
+	// @SuppressWarnings("resource")
 	public static String readFileToString(String path) {
+		RandomAccessFile raf = null;
+
 		try {
-			FileChannel fch = new FileInputStream(path).getChannel();
+			raf = new RandomAccessFile(path, "r");
+			byte[] buffer = new byte[(int) raf.length()];
+			raf.readFully(buffer);
 
-			ByteBuffer byteBuff;
-			byteBuff = fch.map(FileChannel.MapMode.READ_ONLY, 0, fch.size());
-
-			CharBuffer chBuff = Charset.defaultCharset().decode(byteBuff);
-			// CharBuffer chBuff = Charset.forName("UTF-8").decode(byteBuff);
-
-			fch.close();
-
-			return chBuff.toString();
+			return new String(buffer, Charset.defaultCharset());
 		} catch (IOException e) {
-			return "";
+		} finally {
+			if (raf != null) {
+				try {
+					raf.close();
+				} catch (IOException ex) {
+				}
+			}
 		}
+
+		return "";
+
+		// try {
+		// FileChannel fch = new FileInputStream(path).getChannel();
+		//
+		// ByteBuffer byteBuff;
+		// byteBuff = fch.map(FileChannel.MapMode.READ_ONLY, 0, fch.size());
+		//
+		// CharBuffer chBuff = Charset.defaultCharset().decode(byteBuff);
+		// // CharBuffer chBuff = Charset.forName("UTF-8").decode(byteBuff);
+		//
+		// fch.close();
+		//
+		// return chBuff.toString();
+		// } catch (IOException e) {
+		// return "";
+		// }
 	}
 
 	/**

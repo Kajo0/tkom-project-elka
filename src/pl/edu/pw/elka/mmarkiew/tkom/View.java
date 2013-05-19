@@ -1,6 +1,6 @@
 package pl.edu.pw.elka.mmarkiew.tkom;
 
-import java.awt.GridLayout;
+//import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -10,9 +10,11 @@ import java.io.File;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 
@@ -22,8 +24,11 @@ public class View extends JFrame {
 	public static final int VIEW_HEIGHT;
 
 	private JButton processButton;
-	private JLabel firstFile;
-	private JLabel secondFile;
+	private JButton firstFile;
+	private JButton secondFile;
+	private JButton resultFile;
+	private JButton chooseResultDirButton;
+	private JTextArea simpleConsole;
 
 	static {
 		VIEW_WIDTH = 400;
@@ -45,7 +50,7 @@ public class View extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		// setAlwaysOnTop(true);
-		setLayout(new GridLayout(3, 3));
+		setLayout(null);// new GridLayout(6, 1));
 		setVisible(true);
 
 		Insets insets = Window.getWindows()[0].getInsets();
@@ -53,58 +58,9 @@ public class View extends JFrame {
 				+ insets.top + insets.bottom);
 
 		initElements();
-
-		// try {
-		// Lexer lex;
-		// Parser pars;
-		// TreeElement first, second;
-		// Linker link;
-		//
-		// lex = new Lexer(Utilities.readFileToString(firstFile.getText()));
-		// lex.extractTokens();
-		// // for (Token t : lex.getTokens())
-		// // System.out.println(t.getClass());
-		// // System.out.println(lex.getTokens());
-		// pars = new Parser(lex.getTokens());
-		// pars.parseTokens();
-		// first = pars.getTree();
-		// System.out.println(first);
-		//
-		// try {
-		// // Create file
-		// FileWriter fstream = new
-		// FileWriter("C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
-		// BufferedWriter out = new BufferedWriter(fstream);
-		// out.write(first.toString());
-		// // Close the output stream
-		// out.close();
-		// } catch (Exception e) {// Catch exception if any
-		// System.err.println("Error: " + e.getMessage());
-		// }
-		//
-		// // lex = new
-		// // Lexer(Utilities.readFileToString(secondFile.getText()));
-		// // lex.extractTokens();
-		// // pars = new Parser(lex.getTokens());
-		// // pars.parseTokens();
-		// // second = pars.getTree();
-		// //
-		// // link = new Linker(first, second);
-		// // link.generateResult();
-		// //
-		// // System.out
-		// //
-		// .println("--------------------------------------------------------------------------------");
-		// // System.out.println(link.getResult());
-		// // System.out
-		// //
-		// .println("--------------------------------------------------------------------------------");
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// // dispose();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void initElements() {
 		/*
 		 * START Process button
@@ -116,7 +72,8 @@ public class View extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!(new File(firstFile.getText()).exists())
-						|| !(new File(secondFile.getText()).exists())) {
+						|| !(new File(secondFile.getText()).exists())
+						|| !(new File(resultFile.getText()).exists())) {
 					JOptionPane.showMessageDialog(View.this,
 							"One of given files doesn't exist!");
 					return;
@@ -141,19 +98,27 @@ public class View extends JFrame {
 					link = new Linker(first, second);
 					link.generateResult();
 
-					System.out
-							.println("--------------------------------------------------------------------------------");
-					System.out.println(link.getResult());
-					System.out
-							.println("--------------------------------------------------------------------------------");
+					// System.out
+					// .println("--------------------------------------------------------------------------------");
+					// System.out.println(link.getResult());
+					// System.out
+					// .println("--------------------------------------------------------------------------------");
 
+					// Set conflict output
+					String confl = "\tCOMPLETED, conflict counter:\n\n";
 					for (Entry<Integer, Integer> entry : link
 							.getConflictCounterMap().entrySet())
-						System.out.println("Conflict no. " + entry.getKey()
-								+ "\t: " + entry.getValue() + " times");
+						confl += "Conflict no. " + entry.getKey() + "\t: "
+								+ entry.getValue() + " times\n";
+					simpleConsole.setText(confl);
+
+					// Write result to file
+					Utilities.writeToFile(resultFile.getText(), link
+							.getResult().toString());
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					simpleConsole.setText("\tERROR occurred, message:\n\n"
+							+ e.getMessage());
 				}
 			}
 		});
@@ -164,10 +129,17 @@ public class View extends JFrame {
 		/*
 		 * START File labels
 		 */
-		firstFile = new JLabel(
+		firstFile = new JButton(
 				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/1.html");
-		secondFile = new JLabel(
+		firstFile.setBorderPainted(false);
+		firstFile.setContentAreaFilled(false);
+		firstFile.setMargin(new Insets(0, 0, 0, 0));
+
+		secondFile = new JButton(
 				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/2.html");
+		secondFile.setBorderPainted(false);
+		secondFile.setContentAreaFilled(false);
+		secondFile.setMargin(new Insets(0, 0, 0, 0));
 
 		new FileDrop(firstFile, new FileDrop.Listener() {
 			public void filesDropped(File[] files) {
@@ -190,14 +162,143 @@ public class View extends JFrame {
 				}
 			}
 		});
+
+		firstFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose file");
+
+				if (chooser.showOpenDialog(View.this) == JFileChooser.APPROVE_OPTION)
+					firstFile.setText(chooser.getSelectedFile().toString());
+			}
+		});
+
+		secondFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose file");
+
+				if (chooser.showOpenDialog(View.this) == JFileChooser.APPROVE_OPTION)
+					secondFile.setText(chooser.getSelectedFile().toString());
+			}
+		});
 		/*
 		 * END File labels
 		 */
 
+		/*
+		 * START Result file label
+		 */
+		resultFile = new JButton(
+				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
+		resultFile.setBorderPainted(false);
+		resultFile.setContentAreaFilled(false);
+		resultFile.setMargin(new Insets(0, 0, 0, 0));
+
+		new FileDrop(resultFile, new FileDrop.Listener() {
+			public void filesDropped(File[] files) {
+				for (File file : files) {
+					if (file.isDirectory())
+						resultFile.setText(file.getAbsolutePath()
+								+ "/result.html");
+					else
+						resultFile.setText(file.getAbsolutePath());
+				}
+			}
+		});
+
+		resultFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose file");
+
+				if (chooser.showOpenDialog(View.this) == JFileChooser.APPROVE_OPTION)
+					resultFile.setText(chooser.getSelectedFile().toString());
+			}
+		});
+		/*
+		 * END Result file label
+		 */
+
+		/*
+		 * START Result button
+		 */
+
+		chooseResultDirButton = new JButton(
+				"Choose directory for result.html file");
+
+		chooseResultDirButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose directory for result.html file");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+
+				if (chooser.showOpenDialog(View.this) == JFileChooser.APPROVE_OPTION) {
+					resultFile.setText(chooser.getSelectedFile()
+							+ "/result.html");
+				}
+			}
+		});
+		/*
+		 * END Result button
+		 */
+
+		/*
+		 * START Simple console
+		 */
+		simpleConsole = new JTextArea();
+		simpleConsole.setEditable(false);
+		simpleConsole.setWrapStyleWord(true);
+		simpleConsole.setLineWrap(true);
+
+		JScrollPane scrollPane = new JScrollPane(simpleConsole);
+		/*
+		 * END Simple console
+		 */
+
+		/*
+		 * Set bounds
+		 */
+		int x = 0;
+		int y = 0;
+		int width = this.getWidth() - this.insets().left - this.insets().right;
+		int height = 25;
+
+		processButton.setBounds(x, y, width, height);
+		y += height;
+		firstFile.setBounds(x, y, width, height);
+		y += height;
+		secondFile.setBounds(x, y, width, height);
+		y += height;
+		chooseResultDirButton.setBounds(x, y, width, height);
+		y += height;
+		resultFile.setBounds(x, y, width, height);
+		y += height;
+		height = this.getHeight() - height;
+		scrollPane.setBounds(x, y, width, height);
+
+		/*
+		 * Add to pane
+		 */
 		add(processButton);
 		add(firstFile);
 		add(secondFile);
-		revalidate();
+		add(chooseResultDirButton);
+		add(resultFile);
+		add(scrollPane);
+
+		repaint();
+		// revalidate();
 	}
 
 }

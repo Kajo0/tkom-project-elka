@@ -36,6 +36,11 @@ public class Lexer {
 	private int linePosition;
 
 	/**
+	 * When illegal tag occurred, to show was it
+	 */
+	private String illegalTag;
+
+	/**
 	 * Whitespace characters
 	 */
 	public static final LinkedList<Character> whitespaceCharacters = new LinkedList<>(
@@ -83,6 +88,7 @@ public class Lexer {
 		this.stack = new Stack<>();
 		this.lineNumber = 1;
 		this.linePosition = 0;
+		this.illegalTag = "";
 	}
 
 	/**
@@ -101,8 +107,8 @@ public class Lexer {
 				// EOF
 				break;
 			} catch (IllegalArgumentException e) {
-				throw new RuntimeException("No html tag defined. "
-						+ positionDebugString());
+				throw new RuntimeException("No html tag defined: " + "<"
+						+ this.illegalTag + ">" + positionDebugString());
 			}
 		}
 
@@ -485,7 +491,12 @@ public class Lexer {
 	 *            Tag to check
 	 */
 	public void checkProperTag(String tag) {
-		TagQuantity.valueOf(tag.toLowerCase());
+		try {
+			TagQuantity.valueOf(tag.toLowerCase());
+		} catch (IllegalArgumentException e) {
+			this.illegalTag = tag;
+			throw e;
+		}
 	}
 
 	/**
@@ -528,14 +539,14 @@ public class Lexer {
 	 * @return String information
 	 */
 	private String positionDebugString() {
-		return " Line: "
+		return "\nLine: "
 				+ lineNumber
 				+ " Column: "
 				+ linePosition
 				+ ". "
-				+ " On global position: "
+				+ "\nOn global position: "
 				+ pos
-				+ " (+-10 wrapped into __ characters): __"
+				+ " (+-10 wrapped into __ characters):\n\n__"
 				+ text.substring((pos - 10 < 0 ? 0 : pos - 10),
 						(pos + 10 > text.length() ? text.length() : pos + 10))
 				+ "__";
