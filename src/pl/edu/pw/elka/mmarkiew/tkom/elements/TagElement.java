@@ -197,48 +197,38 @@ public class TagElement extends Element {
 		return t;
 	}
 
-	// /**
-	// * @deprecated
-	// */
-	// private Iterator<Element> iter = null;
+	/**
+	 * Check whether tag contains any script element or is script
+	 * 
+	 * @return True if contains, false otherwise
+	 */
+	public boolean hasScriptElement() {
+		if (getTag().equals("script"))
+			return true;
 
-	// /**
-	// * @deprecated
-	// */
-	// private Element actualElement = null;
+		for (Element e : elements) {
+			System.out.println(e.getTag());
+			if (e.getTag().equals("script"))
+				return true;
+		}
 
-	// /**
-	// * @deprecated
-	// */
-	// public Element nextElement() {
-	// // Nic w sobie nie ma
-	// if (elements.isEmpty())
-	// return null;
-	//
-	// // Pierwszy z elementow
-	// if (actualElement == null) {
-	// iter = elements.iterator();
-	// actualElement = iter.next();
-	// return actualElement;
-	// }
-	//
-	// // Byl tag to w niego wchodzimy
-	// if (actualElement instanceof TagElement) {
-	// Element next = ((TagElement) actualElement).nextElement();
-	//
-	// // Jak jest jakis element w rozwazanym
-	// if (next != null)
-	// return next;
-	// }
-	//
-	// // Przeszlo przez nie TagElement lub srodek TagElementu przeszlo
-	// // Wez nastepny jak jest lub null
-	// if (iter.hasNext()) {
-	// actualElement = iter.next();
-	// return actualElement;
-	// } else {
-	// return null;
-	// }
-	// }
+		return false;
+	}
+
+	/**
+	 * Check whether tag contains any style element or is style
+	 * 
+	 * @return True if contains, false otherwise
+	 */
+	public boolean hasStyleElement() {
+		if (getTag().equals("style"))
+			return true;
+
+		for (Element e : elements)
+			if (e.getTag().equals("style"))
+				return true;
+
+		return false;
+	}
 
 }

@@ -81,29 +81,4 @@ public class TreeElement {
 		return doctype;
 	}
 
-	// /**
-	// * @deprecated
-	// */
-	// private Element actualElement = null;
-	//
-	// /**
-	// * @deprecated
-	// */
-	// public Element nextElement() {
-	// if (actualElement == null) {
-	// actualElement = elements.getFirst();
-	// return actualElement;
-	// }
-	//
-	// actualElement = ((TagElement) elements.getFirst()).nextElement();
-	// return actualElement;
-	// }
-	//
-	// /**
-	// * @deprecated
-	// */
-	// public Element getActualElement() {
-	// return actualElement;
-	// }
-
 }

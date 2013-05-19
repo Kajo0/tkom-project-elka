@@ -1,9 +1,11 @@
 package pl.edu.pw.elka.mmarkiew.tkom;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
@@ -340,8 +342,18 @@ public class Linker {
 		String f = fe.toString().replace('\n', ' ');
 		String s = se.toString().replace('\n', ' ');
 
-		String message = "<html><body>"
-				+ "<ul>"
+		String message = "<html><body>";
+
+		if (fe.hasScriptElement())
+			message += "<strong>First contains script element (invisible)</strong>.<br />";
+		if (se.hasScriptElement())
+			message += "<strong>Second contains script element (invisible)</strong>.<br />";
+		if (fe.hasStyleElement())
+			message += "<strong>First contains style element (invisible)</strong>.<br />";
+		if (se.hasStyleElement())
+			message += "<strong>Second contains style element (invisible)</strong>.<br />";
+
+		message += "<ul>"
 				+ "<li>"
 				+ f
 				+ "</li>"
@@ -355,6 +367,20 @@ public class Linker {
 				+ "<li>"
 				+ "&lt;2&gt; <br /> Comparison between &lt;1&gt; and &lt;2.1&gt; <br /> &lt;/2&gt;"
 				+ "</li>" + "</ul>" + "</body></html>";
+
+		message = Pattern
+				.compile("(<script.*?</script\\s*>)|(<style.*?</style\\s*>)",
+						Pattern.DOTALL).matcher(message).replaceAll("");
+
+		try {
+			Utilities
+					.writeToFile(
+							"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html",
+							message);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		int c = JOptionPane.showOptionDialog(null, message,
 				"Conflict no.12 - Different tags comparison.", 0, 0, null, a,
