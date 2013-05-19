@@ -31,7 +31,8 @@ public enum TagQuantity {
 			false), tr(false), tt(false), u(false), ul(false), var(false), video(
 			false), area(true), base(true), basefont(true), br(true), col(true), embed(
 			true), hr(true), img(true), input(true), keygen(true), link(true), meta(
-			true), param(true), source(true), track(true), wbr(true);
+			true), param(true), source(true), track(true), wbr(true), nobr(
+			false);
 
 	/**
 	 * Whether is single tag or not

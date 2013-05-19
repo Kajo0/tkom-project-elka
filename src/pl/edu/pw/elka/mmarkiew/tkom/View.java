@@ -6,10 +6,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -18,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
-import pl.edu.pw.elka.mmarkiew.tkom.tokens.Token;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {

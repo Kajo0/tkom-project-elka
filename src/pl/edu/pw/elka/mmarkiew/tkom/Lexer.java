@@ -67,7 +67,7 @@ public class Lexer {
 	 *            Text to analyze
 	 */
 	public Lexer(String text) {
-		this.text = text;
+		this.text = text + "          "; // Out of bound avoider
 		this.pos = 0;
 		this.tokens = new LinkedList<>();
 		this.stack = new Stack<>();
@@ -264,7 +264,7 @@ public class Lexer {
 		String word = gatherBoundWhite(new char[] { '/', '>' });
 
 		checkProperTag(word);
-		if (!TagQuantity.valueOf(word).isSingle())
+		if (!TagQuantity.valueOf(word.toLowerCase()).isSingle())
 			putOnStack(word);
 
 		tokens.add(new StartOpenTagToken(word));
@@ -463,7 +463,7 @@ public class Lexer {
 	 *            Tag to check
 	 */
 	public void checkProperTag(String tag) {
-		TagQuantity.valueOf(tag);
+		TagQuantity.valueOf(tag.toLowerCase());
 	}
 
 	/**
@@ -496,7 +496,7 @@ public class Lexer {
 	 */
 	private void popFromStack(String tag) {
 		if (!stack.pop().equals(tag))
-			throw new RuntimeException("Bad stack order"
+			throw new RuntimeException("Bad stack order, " + tag + " expected."
 					+ positionDebugString());
 	}
 
