@@ -18,16 +18,53 @@ import javax.swing.JTextArea;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 
+/**
+ * Class represents main app view
+ * 
+ * @author Mikolaj Markiewicz
+ *
+ */
 @SuppressWarnings("serial")
 public class View extends JFrame {
+	
+	/**
+	 * Frame width
+	 */
 	public static final int VIEW_WIDTH;
+	
+	/**
+	 * Frame height
+	 */
 	public static final int VIEW_HEIGHT;
 
+	/**
+	 * Process button
+	 */
 	private JButton processButton;
+	
+	/**
+	 * Button containing path to first file
+	 */
 	private JButton firstFile;
+	
+	/**
+	 * Button containing path to second file
+	 */
 	private JButton secondFile;
+	
+	/**
+	 * Button containing path to result file
+	 */
 	private JButton resultFile;
+	
+	/**
+	 * Button to open result dir chooser
+	 */
 	private JButton chooseResultDirButton;
+	
+	/**
+	 * Simple textarea console
+	 */
 	private JTextArea simpleConsole;
 
 	static {
@@ -35,12 +72,18 @@ public class View extends JFrame {
 		VIEW_HEIGHT = 300;
 	}
 
+	/**
+	 * C-tor
+	 */
 	public View() {
 		super("TKOM");
 
 		init();
 	}
 
+	/**
+	 * Frame initialization
+	 */
 	private void init() {
 		setBounds(
 				(Toolkit.getDefaultToolkit().getScreenSize().width - VIEW_WIDTH) / 2,
@@ -60,6 +103,9 @@ public class View extends JFrame {
 		initElements();
 	}
 
+	/**
+	 * Components initialization
+	 */
 	@SuppressWarnings("deprecation")
 	private void initElements() {
 		/*
