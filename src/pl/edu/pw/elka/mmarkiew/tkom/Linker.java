@@ -206,8 +206,8 @@ public class Linker {
 		// Conflict via 7.
 		TextElement resElement = new TextElement(fe.getContent(), actualResult);
 
-		String f = fe.toString().replace('\n', ' ');
-		String s = se.toString().replace('\n', ' ');
+		String f = fe.toString().replace('\n', ' ').trim();
+		String s = se.toString().replace('\n', ' ').trim();
 
 		if (!f.equals(s)) {
 			String[] a = new String[] { "1", "2", "1 + 2", "2 + 1" };
@@ -267,8 +267,8 @@ public class Linker {
 	private void conflictTagTextHelper(TagElement tag, TextElement text) {
 		if (tag.hasOnlyText()) {
 			// First has only text element inside
-			if (((TagElement) tag).getTextElementContent().equals(
-					((TextElement) text).getContent())) {
+			if (((TagElement) tag).getTextElementContent().trim()
+					.equals(((TextElement) text).getContent().trim())) {
 				// Texts are equal
 				conflictText9(tag);
 			} else {
@@ -305,8 +305,8 @@ public class Linker {
 	 */
 	private void conflictText10(TagElement tag, TextElement text) {
 		// Via 10.
-		addElementToResult(text.clone());
 		addElementToResult(tag.clone());
+		addElementToResult(text.clone());
 
 		incrementConflictCounter(10);
 	}
@@ -335,7 +335,7 @@ public class Linker {
 	 */
 	private void conflictTagNames12(TagElement fe, TagElement se) {
 		// Conflict, via 12.
-		String[] a = new String[] { "<1>", "<2>", "<1> <2>",
+		String[] a = new String[] { "<1> <2>", "<1>", "<2>",
 				"<1> InnerOf2 ... </1>" };
 
 		String f = fe.toString().replace('\n', ' ');
@@ -355,12 +355,12 @@ public class Linker {
 		message += "<ul>"
 				+ "<li>"
 				+ f
-				+ "</li>"
-				+ "<li>"
 				+ s
 				+ "</li>"
 				+ "<li>"
 				+ f
+				+ "</li>"
+				+ "<li>"
 				+ s
 				+ "</li>"
 				+ "<li>"
