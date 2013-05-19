@@ -129,14 +129,14 @@ public class View extends JFrame {
 		/*
 		 * START File labels
 		 */
-		firstFile = new JButton(
-				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/1.html");
+		firstFile = new JButton("First file");
+		// "C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/1.html");
 		firstFile.setBorderPainted(false);
 		firstFile.setContentAreaFilled(false);
 		firstFile.setMargin(new Insets(0, 0, 0, 0));
 
-		secondFile = new JButton(
-				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/2.html");
+		secondFile = new JButton("Second file");
+		// "C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/2.html");
 		secondFile.setBorderPainted(false);
 		secondFile.setContentAreaFilled(false);
 		secondFile.setMargin(new Insets(0, 0, 0, 0));
@@ -193,8 +193,8 @@ public class View extends JFrame {
 		/*
 		 * START Result file label
 		 */
-		resultFile = new JButton(
-				"C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
+		resultFile = new JButton("Result file");
+		// "C:/Users/Kajo/Documents/Projects/Java/Tkom/src/examples/3.html");
 		resultFile.setBorderPainted(false);
 		resultFile.setContentAreaFilled(false);
 		resultFile.setMargin(new Insets(0, 0, 0, 0));
