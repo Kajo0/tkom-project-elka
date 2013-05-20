@@ -29,6 +29,21 @@ public abstract class Element {
 	protected int level = 0;
 
 	/**
+	 * Number of line where occurred
+	 */
+	protected int lineNumber;
+
+	/**
+	 * Position in line where occurred
+	 */
+	protected int linePosition;
+
+	/**
+	 * Position in file where occured
+	 */
+	protected int globalPosition;
+
+	/**
 	 * C-tor
 	 */
 	public Element() {
@@ -132,6 +147,49 @@ public abstract class Element {
 	 */
 	public void setLevel(int l) {
 		this.level = l;
+	}
+
+	/**
+	 * Get line number where token occurred
+	 * 
+	 * @return Line number
+	 */
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	/**
+	 * Get position in line where token occurred
+	 * 
+	 * @return Position in line
+	 */
+	public int getLinePosition() {
+		return linePosition;
+	}
+
+	/**
+	 * Get position in file where occurred
+	 * 
+	 * @return Global file position
+	 */
+	public int getGlobalPosition() {
+		return globalPosition;
+	}
+
+	/**
+	 * Set positions
+	 * 
+	 * @param positions
+	 *            Array with positions
+	 * 
+	 * @return Self element instance
+	 */
+	public Element setPositions(int[] positions) {
+		this.lineNumber = positions[0];
+		this.linePosition = positions[1];
+		this.globalPosition = positions[2];
+
+		return this;
 	}
 
 }

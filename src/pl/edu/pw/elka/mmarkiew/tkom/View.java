@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
 
@@ -22,16 +23,16 @@ import pl.edu.pw.elka.mmarkiew.tkom.elements.TreeElement;
  * Class represents main app view
  * 
  * @author Mikolaj Markiewicz
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class View extends JFrame {
-	
+
 	/**
 	 * Frame width
 	 */
 	public static final int VIEW_WIDTH;
-	
+
 	/**
 	 * Frame height
 	 */
@@ -41,27 +42,27 @@ public class View extends JFrame {
 	 * Process button
 	 */
 	private JButton processButton;
-	
+
 	/**
 	 * Button containing path to first file
 	 */
 	private JButton firstFile;
-	
+
 	/**
 	 * Button containing path to second file
 	 */
 	private JButton secondFile;
-	
+
 	/**
 	 * Button containing path to result file
 	 */
 	private JButton resultFile;
-	
+
 	/**
 	 * Button to open result dir chooser
 	 */
 	private JButton chooseResultDirButton;
-	
+
 	/**
 	 * Simple textarea console
 	 */
@@ -69,7 +70,7 @@ public class View extends JFrame {
 
 	static {
 		VIEW_WIDTH = 400;
-		VIEW_HEIGHT = 300;
+		VIEW_HEIGHT = 400;
 	}
 
 	/**
@@ -156,6 +157,10 @@ public class View extends JFrame {
 							.getConflictCounterMap().entrySet())
 						confl += "Conflict no. " + entry.getKey() + "\t: "
 								+ entry.getValue() + " times\n";
+
+					confl += "\n\tTrace of used conflicts:\n";
+					confl += link.getConflictTrace();
+
 					simpleConsole.setText(confl);
 
 					// Write result to file
@@ -308,6 +313,8 @@ public class View extends JFrame {
 		simpleConsole.setLineWrap(true);
 
 		JScrollPane scrollPane = new JScrollPane(simpleConsole);
+		scrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		/*
 		 * END Simple console
 		 */
@@ -330,7 +337,8 @@ public class View extends JFrame {
 		y += height;
 		resultFile.setBounds(x, y, width, height);
 		y += height;
-		height = this.getHeight() - height;
+		height = this.getHeight() - y - this.insets().top
+				- this.insets().bottom;
 		scrollPane.setBounds(x, y, width, height);
 
 		/*

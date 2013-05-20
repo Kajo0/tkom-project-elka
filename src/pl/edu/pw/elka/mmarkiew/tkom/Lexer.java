@@ -217,7 +217,7 @@ public class Lexer {
 			String type = gatherBound(new char[] { '>' });
 			popChar();
 
-			tokens.add(new DoctypeToken(type));
+			tokens.add(new DoctypeToken(type).setPosition(lineNumber, linePosition, pos));
 		} else {
 			throw new RuntimeException("No doctype found!"
 					+ positionDebugString());
@@ -243,7 +243,7 @@ public class Lexer {
 				throw new RuntimeException("Expected Tag Element."
 						+ positionDebugString());
 
-			tokens.add(new TextToken(word));
+			tokens.add(new TextToken(word).setPosition(lineNumber, linePosition, pos));
 		}
 
 		// We are on < character
@@ -265,9 +265,9 @@ public class Lexer {
 			analyzeElement();
 
 			if (getChar() == '>')
-				tokens.add(new CloseTagToken(""));
+				tokens.add(new CloseTagToken("").setPosition(lineNumber, linePosition, pos));
 			else if (popChar() == '/' && getChar() == '>')
-				tokens.add(new CloseEmptyTagToken(""));
+				tokens.add(new CloseEmptyTagToken("").setPosition(lineNumber, linePosition, pos));
 			else
 				throw new RuntimeException("Expected close tag."
 						+ positionDebugString());
@@ -295,7 +295,7 @@ public class Lexer {
 		if (!TagQuantity.valueOf(word.toLowerCase()).isSingle())
 			putOnStack(word);
 
-		tokens.add(new StartOpenTagToken(word));
+		tokens.add(new StartOpenTagToken(word).setPosition(lineNumber, linePosition, pos));
 
 		ommitWhitespaces();
 
@@ -305,12 +305,12 @@ public class Lexer {
 			String wo = gatherBoundWhite(new char[] { '=', '>', '/' });
 			ommitWhitespaces();
 
-			tokens.add(new AttributeKeyToken(wo));
-			tokens.add(new AttributeEqualsToken(""));
+			tokens.add(new AttributeKeyToken(wo).setPosition(lineNumber, linePosition, pos));
+			tokens.add(new AttributeEqualsToken("").setPosition(lineNumber, linePosition, pos));
 
 			if (getChar() != '=') {
 				// No value attribute, proper form => key="key"
-				tokens.add(new AttributeValueToken(wo, '\"'));
+				tokens.add(new AttributeValueToken(wo, '\"').setPosition(lineNumber, linePosition, pos));
 			} else {
 				popChar();
 				ommitWhitespaces();
@@ -354,7 +354,7 @@ public class Lexer {
 		popChar();
 
 		if (word.trim().length() != 0)
-			tokens.add(new CommentToken("//<!--\r\n" + word + "\r\n//-->"));
+			tokens.add(new CommentToken("//<!--\r\n" + word + "\r\n//-->").setPosition(lineNumber, linePosition, pos));
 
 		expectCloseTag();
 	}
@@ -384,7 +384,7 @@ public class Lexer {
 					+ positionDebugString());
 
 		popChar();
-		tokens.add(new AttributeValueToken(word, '\"'));
+		tokens.add(new AttributeValueToken(word, '\"').setPosition(lineNumber, linePosition, pos));
 	}
 
 	/**
@@ -412,7 +412,7 @@ public class Lexer {
 					+ positionDebugString());
 
 		popChar();
-		tokens.add(new AttributeValueToken(word, '\''));
+		tokens.add(new AttributeValueToken(word, '\'').setPosition(lineNumber, linePosition, pos));
 	}
 
 	/**
@@ -428,7 +428,7 @@ public class Lexer {
 			throw new RuntimeException("Expected attribute value"
 					+ positionDebugString());
 
-		tokens.add(new AttributeValueToken(word, '\"'));
+		tokens.add(new AttributeValueToken(word, '\"').setPosition(lineNumber, linePosition, pos));
 	}
 
 	/**
@@ -441,8 +441,8 @@ public class Lexer {
 		checkProperTag(word);
 		popFromStack(word);
 
-		tokens.add(new EndOpenTagToken(word));
-		tokens.add(new CloseTagToken(""));
+		tokens.add(new EndOpenTagToken(word).setPosition(lineNumber, linePosition, pos));
+		tokens.add(new CloseTagToken("").setPosition(lineNumber, linePosition, pos));
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class Lexer {
 					+ positionDebugString());
 		}
 
-		tokens.add(new CommentToken(wrd.toString()));
+		tokens.add(new CommentToken(wrd.toString()).setPosition(lineNumber, linePosition, pos));
 	}
 
 	/**

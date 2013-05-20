@@ -28,6 +28,11 @@ public class Linker {
 	private Map<Integer, Integer> conflictMap;
 
 	/**
+	 * Examied conflict trace
+	 */
+	private String conflictTrace;
+
+	/**
 	 * First tree used in merge
 	 */
 	private TreeElement first;
@@ -62,6 +67,7 @@ public class Linker {
 		this.second = second;
 		this.result = new TreeElement();
 
+		this.conflictTrace = "";
 		this.conflictMap = new TreeMap<>();
 		for (int i = 1; i < 13; ++i)
 			if (i == 8)
@@ -121,6 +127,8 @@ public class Linker {
 	 */
 	private void incrementConflictCounter(int i) {
 		conflictMap.put(i, conflictMap.get(i) + 1);
+
+		conflictTrace += i + " -> ";
 	}
 
 	/**
@@ -130,6 +138,15 @@ public class Linker {
 	 */
 	public Map<Integer, Integer> getConflictCounterMap() {
 		return conflictMap;
+	}
+
+	/**
+	 * Get conflict trace of used conflicts
+	 * 
+	 * @return Trace string
+	 */
+	public String getConflictTrace() {
+		return conflictTrace;
 	}
 
 	/**
@@ -213,6 +230,11 @@ public class Linker {
 			String[] a = new String[] { "1", "2", "1 + 2", "2 + 1" };
 
 			String message = "<html><body>";
+			message += "Place of last considered tag character:<br />";
+			message += "&lt;1&gt; in line: " + fe.getLineNumber() + " on col: "
+					+ fe.getLinePosition() + "<br />";
+			message += "&lt;2&gt; in line: " + se.getLineNumber() + " on col: "
+					+ se.getLinePosition() + "<br />";
 
 			if (fe instanceof CommentElement) {
 				message += "<strong>First one is comment so it's hidden</strong>. ";
@@ -342,6 +364,11 @@ public class Linker {
 		String s = se.toString().replace('\n', ' ');
 
 		String message = "<html><body>";
+		message += "Place of last considered tag character:<br />";
+		message += "&lt;1&gt; in line: " + fe.getLineNumber() + " on col: "
+				+ fe.getLinePosition() + "<br />";
+		message += "&lt;2&gt; in line: " + se.getLineNumber() + " on col: "
+				+ se.getLinePosition() + "<br />";
 
 		if (fe.hasScriptElement())
 			message += "<strong>First contains script element (invisible)</strong>.<br />";

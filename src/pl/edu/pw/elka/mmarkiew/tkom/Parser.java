@@ -126,7 +126,8 @@ public class Parser {
 
 		if (t instanceof StartOpenTagToken) {
 			// Token <tag
-			actualElement = new TagElement(t.getValue(), actualElement);
+			actualElement = (TagElement) new TagElement(t.getValue(),
+					actualElement).setPositions(t.getPositions());
 
 			if (lastElem == null)
 				tree.addElement(actualElement);
@@ -139,10 +140,12 @@ public class Parser {
 			actualElement = (TagElement) actualElement.getParent();
 		} else if (t instanceof TextToken) {
 			// Token #text
-			lastElem.addElement(new TextElement(t.getValue(), lastElem));
+			lastElem.addElement(new TextElement(t.getValue(), lastElem)
+					.setPositions(t.getPositions()));
 		} else if (t instanceof CommentToken) {
 			// Token #comment
-			lastElem.addElement(new CommentElement(t.getValue(), lastElem));
+			lastElem.addElement(new CommentElement(t.getValue(), lastElem)
+					.setPositions(t.getPositions()));
 		} else {
 			// End of recursion, go on top level
 		}
@@ -166,7 +169,8 @@ public class Parser {
 			return;
 		} else if (t instanceof CloseTagToken) {
 			// Token >
-			if (TagQuantity.valueOf(actualElement.getTag().toLowerCase()).isSingle()) {
+			if (TagQuantity.valueOf(actualElement.getTag().toLowerCase())
+					.isSingle()) {
 				actualElement.setEmpty(true);
 				actualElement = (TagElement) actualElement.getParent();
 			}
