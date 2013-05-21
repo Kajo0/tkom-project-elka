@@ -198,6 +198,7 @@ public class Linker {
 		// Inner via 6.
 		TagElement resElement = new TagElement(fe.getTag(), actualResult);
 
+		incrementConflictCounter(6);
 		conflictAttributes2_5(fe, se, resElement);
 
 		newActualResult(resElement);
@@ -206,8 +207,6 @@ public class Linker {
 				.iterator());
 
 		parentActualResult();
-
-		incrementConflictCounter(6);
 	}
 
 	/**
